@@ -45,7 +45,7 @@ const App = () => {
       <h1>Ancedote with most votes</h1>
       <p>{anecdotes[selected.mostVoted]}</p>
 
-    </div>ls
+    </div>
   )
 }
 
