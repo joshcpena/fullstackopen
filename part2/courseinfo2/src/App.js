@@ -29,7 +29,7 @@ const App = () => {
           id: 4
         }
       ]
-    }, 
+    },
     {
       name: 'Node.js',
       id: 2,
@@ -48,7 +48,7 @@ const App = () => {
     }
   ]
 
-  return (courses.map( course => <Course key={course.id} course={course} />)) 
+  return (courses.map(course => <Course key={course.id} course={course} />))
 }
 
 
