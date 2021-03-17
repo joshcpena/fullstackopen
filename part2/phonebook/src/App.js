@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import peopleService from './services/people'
+
 
 const Person = ({ persons, searchTerm }) => {
   if (searchTerm) {
@@ -42,27 +43,17 @@ const Filter = ({ searchTerm, handleSearchChange }) => {
 
 
 const App = () => {
-  // const [persons, setPersons] = useState([
-  //   { name: 'Arto Hellas', number: '040-123456' },
-  //   { name: 'Ada Lovelace', number: '39-44-5323523' },
-  //   { name: 'Dan Abramov', number: '12-43-234345' },
-  //   { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  // ])
+
   const [newName, setNewName] = useState('')
   const [newNum, setNewNum] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
-
   const [persons, setPersons] = useState([])
+
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
-      })
+    peopleService
+      .getAll()
+      .then(intialPeople => setPersons(intialPeople))
   }, [])
-
-
-
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -77,7 +68,10 @@ const App = () => {
       setNewName('')
       setNewNum('')
     } else {
-      setPersons(persons.concat({ name: newName, number: newNum }))
+      const personObj = { name: newName, number: newNum }
+      peopleService
+        .create(personObj)
+        .then(returnedPerson => setPersons(persons.concat(returnedPerson)))
       setNewName('')
       setNewNum('')
     }
