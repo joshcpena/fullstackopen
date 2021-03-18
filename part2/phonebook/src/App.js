@@ -2,16 +2,28 @@ import React, { useState, useEffect } from 'react'
 import peopleService from './services/people'
 
 
-const Person = ({ persons, searchTerm }) => {
+const Person = ({ persons, searchTerm, removePerson }) => {
+  const confirmRemove = (name, id) => window.confirm(`Delete ${name}?`) ? id : 0
+
   if (searchTerm) {
     const personList = (persons.filter(person => person.name.toLowerCase().includes(searchTerm)))
     return (
-      personList.map(person => <span key={person.name}> {person.name} {person.number} <br /> </span>)
+      personList.map(person =>
+        <div key={person.name}>
+          <span > {person.name} {person.number}   </span>
+          <button onClick={() => removePerson(confirmRemove(person.name, person.id))}>delete</button>
+        </div>
+      )
     )
   }
   else {
     return (
-      persons.map(person => <span key={person.name}> {person.name} {person.number} <br /> </span>)
+      persons.map(person =>
+        <div key={person.name}>
+          <span > {person.name} {person.number} </span>
+          <button onClick={() => removePerson(confirmRemove(person.name, person.id))}>delete</button>
+        </div >
+      )
     )
   }
 }
@@ -55,6 +67,14 @@ const App = () => {
       .then(intialPeople => setPersons(intialPeople))
   }, [])
 
+  const removePerson = (id) => {
+    if (id !== 0) {
+      peopleService
+        .remove(id)
+        .then(() => (peopleService.getAll().then(reponse => setPersons(reponse))))
+    }
+  }
+
   const addPerson = (event) => {
     event.preventDefault()
     let flag = false
@@ -78,6 +98,7 @@ const App = () => {
 
   }
 
+
   const handleSearchChange = (event) => setSearchTerm(event.target.value)
   const handleNameChange = (event) => setNewName(event.target.value)
   const handleNumChange = (event) => setNewNum(event.target.value)
@@ -91,7 +112,7 @@ const App = () => {
       <h3>Add a new</h3>
       <PersonForm name={newName} handleNameChange={handleNameChange} number={newNum} handleNumChange={handleNumChange} addPerson={addPerson} />
       <h3>Numbers</h3>
-      <Person persons={persons} searchTerm={searchTerm} />
+      <Person persons={persons} searchTerm={searchTerm} removePerson={removePerson} />
     </div>
   )
 }
