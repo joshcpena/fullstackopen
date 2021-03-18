@@ -102,6 +102,11 @@ const App = () => {
       peopleService
         .create(personObj)
         .then(returnedPerson => setPersons(persons.concat(returnedPerson)))
+<<<<<<< HEAD
+=======
+      setNewName('')
+      setNewNum('')
+>>>>>>> 88b81ecb30983f1a8f2dcd07006a18e66bcec73c
     }
     setNewName('')
     setNewNum('')
