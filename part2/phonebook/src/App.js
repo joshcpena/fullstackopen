@@ -77,25 +77,34 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
-    let flag = false
+    let id = 0
     persons.forEach((person) => {
       if (person.name === newName) {
-        flag = true
+        id = person.id
       }
     })
-    if (flag) {
-      window.alert(`${newName} is already added to phonebook`)
-      setNewName('')
-      setNewNum('')
+    if (id !== 0) {
+      const item = persons.find(value => value.id === id)
+      if (!newNum)
+        window.alert(`${newName} is already added to phonebook`)
+      else if (newNum === item.number)
+        window.alert(`${item.name} is already added to phonebook with number ${item.number}`)
+      else if (newNum !== item.number) {
+        const updateBool = window.confirm(`${item.name} is already added to phonebook, replace ${item.number} with ${newNum}?`)
+        if (updateBool)
+          peopleService
+            .update(id, { name: newName, number: newNum })
+            .then(returnedPerson =>
+              setPersons(persons.map(person => person.id !== id ? person : returnedPerson)))
+      }
     } else {
       const personObj = { name: newName, number: newNum }
       peopleService
         .create(personObj)
         .then(returnedPerson => setPersons(persons.concat(returnedPerson)))
-      setNewName('')
-      setNewNum('')
     }
-
+    setNewName('')
+    setNewNum('')
   }
 
 
