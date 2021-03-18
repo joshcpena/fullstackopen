@@ -8,8 +8,7 @@ const create = newObject => axios.post(baseURL, newObject).then(response => resp
 
 const remove = id => axios.delete(`${baseURL}/${id}`, { data: 'yes' })
 
-const update = (id, newObject) => axios.put(`${baseURL}/${id}`, newObject)
-    .then(response => response.data)
+const update = (id, newObject) => axios.put(`${baseURL}/${id}`, newObject).then(response => response.data)
 
 const services = { getAll, create, remove, update }
 
