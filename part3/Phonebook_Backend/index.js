@@ -1,7 +1,10 @@
 const express = require('express');
 const morgan = require('morgan');
+const cors = require('cors');
+
 var app = express();
 app.use(express.json());
+app.use(cors());
 
 morgan.token('body', (req, res) => JSON.stringify(req.body));
 
@@ -80,6 +83,5 @@ const unknownEndpoint = (request, response) => {
 app.use(unknownEndpoint)
 
 
-const PORT = 3001;
-app.listen(PORT);
-console.log(`Sever running on part ${PORT}`);
+const PORT = process.env.PORT || 3001
+app.listen(PORT, () => console.log(`Sever running on part ${PORT}`));
