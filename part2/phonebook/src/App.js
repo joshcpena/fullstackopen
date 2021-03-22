@@ -106,7 +106,6 @@ const App = () => {
           peopleService
             .update(id, { name: newName, number: newNum })
             .then(returnedPerson => {
-              console.log('should not show if there was n error')
               setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
               setMessage([`Updated ${returnedPerson.name}'s number to ${returnedPerson.number}`, 'notification'])
               setTimeout(() => setMessage(['-1', '']), 2000)
