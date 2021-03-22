@@ -127,6 +127,11 @@ const App = () => {
           setMessage([`Added ${returnedPerson.name}`, 'notification'])
           setTimeout(() => setMessage(['-1', '']), 2000)
         })
+        .catch(error => {
+          console.log(error.response.data)
+          setMessage([`${JSON.stringify(error.response.data)}`, 'error'])
+          setTimeout(() => setMessage(['-1', '']), 2000)
+        })
     }
     setNewName('')
     setNewNum('')

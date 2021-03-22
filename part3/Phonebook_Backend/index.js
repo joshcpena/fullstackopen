@@ -40,7 +40,7 @@ let persons_arry = [
         "number": "39-23-6423122"
     }]
 
-app.get('/info', (request, response) => {
+app.get('/info', (request, response, next) => {
     Person.find({})
         .then(persons => {
             response.send(`<span>Phonebook has info for ${persons.length} people.</span><br/><span>${Date()}</span>`)
@@ -70,8 +70,9 @@ app.delete('/api/persons/:id', (request, response) => {
         .catch(error => next(error));
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     // const body = request.body;
+    // const randId = Math.floor(Math.random() * Math.floor(1000));
     // if (!body.name || !body.number) {
     //     return response.status(400).json({ error: 'name or number missing' });
     // } else if (persons.find(person => person.name === body.name)) {
@@ -86,22 +87,23 @@ app.post('/api/persons', (request, response) => {
     // persons = persons.concat(person);
     // response.json(person);
 
+
+    // if (!body.name) {
+    //     return response.status(400).json({ error: 'content missing' });
+    // }
     const body = request.body;
 
-    if (!body.name) {
-        return response.status(400).json({ error: 'content missing' });
-    }
-    const randId = Math.floor(Math.random() * Math.floor(1000));
     const person = new Person({
-        //id: randId,
         name: body.name,
         number: body.number || ''
     });
-    person.save().then(savedPerson => response.json(savedPerson));
+    person.save()
+        .then(savedPerson => response.json(savedPerson))
+        .catch(error => next(error));
 
 })
 
-app.put('/api/persons/:id', (request, response, error) => {
+app.put('/api/persons/:id', (request, response, next) => {
     const body = request.body;
 
     const person = {
@@ -123,9 +125,12 @@ app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
     console.log(error);
-    if (error.name == 'CastError')
+    if (error.name == 'CastError') {
         return response.status(400).send({ error: 'malformatted id' });
-
+    }
+    else if (error.name == 'ValidationError') {
+        return response.status(400).send({ error: error.message });
+    }
     next(error)
 }
 app.use(errorHandler)
