@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign, no-underscore-dangle */
 const mongoose = require('mongoose');
 
 const blogSchema = new mongoose.Schema({
@@ -11,15 +12,16 @@ const blogSchema = new mongoose.Schema({
     required: true,
   },
   likes: Number,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
 });
 
 blogSchema.set('toJSON', {
   transform: (document, returnedObj) => {
-    // eslint-disable-next-line no-param-reassign, no-underscore-dangle
     returnedObj.id = returnedObj._id.toString();
-    // eslint-disable-next-line no-param-reassign, no-underscore-dangle
     delete returnedObj._id;
-    // eslint-disable-next-line no-param-reassign, no-underscore-dangle
     delete returnedObj.__v;
   },
 });
