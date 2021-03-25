@@ -207,4 +207,15 @@ test('validated title and url are required', async () => {
     .expect(400);
 });
 
+test('successed with code 204 if id is valid', async () => {
+  let notes = await api.get('/api/blogs');
+  await api
+    // eslint-disable-next-line no-underscore-dangle
+    .delete(`/api/blogs/${intialBlogs[1]._id}`)
+    .expect(204);
+  notes = await api.get('/api/blogs');
+
+  expect(notes.body.map((blog) => blog.title)).not.toContain(intialBlogs[1].title);
+});
+
 afterAll(() => mongoose.connection.close());
