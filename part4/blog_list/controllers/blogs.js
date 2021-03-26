@@ -11,20 +11,11 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs);
 });
 
-const getTokenFrom = (request) => {
-  const authorization = request.get('authorization');
-  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-    return authorization.substring(7);
-  }
-  return null;
-};
-
 blogsRouter.post('/', async (request, response) => {
   const { body } = request;
-  const token = getTokenFrom(request);
-  const decodedToken = jwt.verify(token, config.SECRET);
-  if (!token || !decodedToken.id) {
-    return response.status(401).json({ error: 'toekn missing or invalid' });
+  const decodedToken = jwt.verify(request.token, config.SECRET);
+  if (!request.token || !decodedToken.id) {
+    return response.status(401).json({ error: 'token missing or invalid' });
   }
   const user = await User.findById(decodedToken.id);
 
