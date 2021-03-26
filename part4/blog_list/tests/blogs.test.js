@@ -158,9 +158,16 @@ test('validate id property exits', async () => {
 });
 
 test('a valid blog can be added', async () => {
-  const newBlog = { author: 'johan', title: 'This was a succesful addition', url: 'www.url.com' };
+  const newBlog = {
+    author: 'johan', title: 'This was a succesful addition', url: 'www.url.com', userId: '605e555247bc4b4d60401416',
+  };
+  const token = await api
+    .post('/api/login')
+    .send({ username: 'root', password: 's3crets' });
+
   await api
     .post('/api/blogs')
+    .set({ Authorization: `bearer ${token.body.token}` })
     .send(newBlog)
     .expect(200)
     .expect('Content-Type', /application\/json/);
@@ -172,9 +179,16 @@ test('a valid blog can be added', async () => {
 });
 
 test('likes will default to 0 if missing from post', async () => {
-  const newBlog = { author: 'johan', title: 'This was a succesful addition', url: 'www.url.com' };
+  const newBlog = {
+    author: 'johan', title: 'This was a succesful addition', url: 'www.url.com', userId: '605e555247bc4b4d60401416',
+  };
+  const token = await api
+    .post('/api/login')
+    .send({ username: 'root', password: 's3crets' });
+
   await api
     .post('/api/blogs')
+    .set({ Authorization: `bearer ${token.body.token}` })
     .send(newBlog);
 
   const response = await api.get('/api/blogs');
@@ -189,20 +203,28 @@ test('likes will default to 0 if missing from post', async () => {
 });
 
 test('validated title and url are required', async () => {
-  let newBlog = { author: 'johan', title: 'This was a succesful addition' };
+  let newBlog = {
+    author: 'johan', url: 'www.url.com', userId: '605e555247bc4b4d60401416',
+  };
+  const token = await api
+    .post('/api/login')
+    .send({ username: 'root', password: 's3crets' });
   await api
     .post('/api/blogs')
+    .set({ Authorization: `bearer ${token.body.token}` })
     .send(newBlog)
     .expect(400);
 
   newBlog = { author: 'johan', url: 'www.urlexample.com/index.html' };
   await api
     .post('/api/blogs')
+    .set({ Authorization: `bearer ${token.body.token}` })
     .send(newBlog)
     .expect(400);
   newBlog = {};
   await api
     .post('/api/blogs')
+    .set({ Authorization: `bearer ${token.body.token}` })
     .send(newBlog)
     .expect(400);
 });
