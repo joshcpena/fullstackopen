@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 const supertest = require('supertest');
+const bcrypt = require('bcrypt');
+const User = require('../models/user');
+
 const listHelper = require('../utils/list_helper');
 const app = require('../app');
 const Blog = require('../models/blog');
@@ -110,29 +113,51 @@ describe('total likes', () => {
 
 const intialBlogs = [
   {
-    _id: '5a422a851b54a676234d17f7',
     title: 'React patterns',
     author: 'Michael Chan',
     url: 'https://reactpatterns.com/',
     likes: 7,
-    __v: 0,
+    userId: '605e87937b5e240f0009ec8f',
   },
   {
-    _id: '5a422aa71b54a676234d17f8',
     title: 'Go To Statement Considered Harmful',
     author: 'Edsger W. Dijkstra',
     url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
     likes: 5,
-    __v: 0,
+    userId: '605e87937b5e240f0009ec8f',
   },
 ];
 
 beforeEach(async () => {
   await Blog.deleteMany({});
+  await User.deleteMany({});
 
-  const blogObjects = intialBlogs.map((blog) => new Blog(blog));
-  const promises = blogObjects.map((blog) => blog.save());
-  await Promise.all(promises);
+  const passwordHash = await bcrypt.hash('s3crets', 10);
+  const user = new User({ username: 'root', passwordHash });
+  await user.save();
+
+  let blog = new Blog({
+    author: intialBlogs[0].author || '',
+    title: intialBlogs[0].title,
+    likes: intialBlogs[0].likes || 0,
+    url: intialBlogs[0].url,
+    // eslint-disable-next-line no-underscore-dangle
+    user: user._id,
+  });
+  await blog.save();
+
+  blog = new Blog({
+    author: intialBlogs[1].author || '',
+    title: intialBlogs[1].title,
+    likes: intialBlogs[1].likes || 0,
+    url: intialBlogs[1].url,
+    // eslint-disable-next-line no-underscore-dangle
+    user: user._id,
+  });
+  await blog.save();
+  // const blogObjects = intialBlogs.map((blog) => new Blog(blog));
+  // onst promises = blogObjects.map((blog) => blog.save());
+  // await Promise.all(promises);
 });
 
 test('blog returned as josn', async () => {
@@ -229,15 +254,32 @@ test('validated title and url are required', async () => {
     .expect(400);
 });
 
-test('successed with code 204 if id is valid', async () => {
-  let notes = await api.get('/api/blogs');
+test('success with code 204 if id is valid', async () => {
+  let blogs = await api.get('/api/blogs');
+  const token = await api
+    .post('/api/login')
+    .send({ username: 'root', password: 's3crets' });
+
   await api
     // eslint-disable-next-line no-underscore-dangle
-    .delete(`/api/blogs/${intialBlogs[1]._id}`)
+    .delete(`/api/blogs/${blogs.body[1].id}`)
+    .set({ Authorization: `bearer ${token.body.token}` })
     .expect(204);
-  notes = await api.get('/api/blogs');
+  blogs = await api.get('/api/blogs');
 
-  expect(notes.body.map((blog) => blog.title)).not.toContain(intialBlogs[1].title);
+  expect(blogs.body.map((blog) => blog.title)).not.toContain(intialBlogs[1].title);
+});
+
+test('blog cannot be added without token', async () => {
+  const newBlog = {
+    author: 'johan', title: 'This was a succesful addition', url: 'www.url.com', userId: '605e555247bc4b4d60401416',
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(401)
+    .expect('Content-Type', /application\/json/);
 });
 
 afterAll(() => mongoose.connection.close());
