@@ -10,7 +10,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [message, setMessage] = useState(null)
+  const [message, setMessage] = useState([-1, ''])
   const [user, setUser] = useState(null)
   const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
 
@@ -40,9 +40,9 @@ const App = () => {
       setUsername('');
       setPassword('')
     } catch (exception) {
-      setMessage('Wrong credentials')
+      setMessage(['Wrong username or password', 'error'])
       setTimeout(() => {
-        setMessage(null)
+        setMessage([-1, ''])
       }, 5000)
     }
   }
@@ -65,17 +65,22 @@ const App = () => {
       author: newBlog.author || '',
       url: newBlog.url,
     }
-    console.log('sending ... ', blogObj)
-    const result = await blogService.saveBlog(blogObj)
-    console.log('result ... ', result)
 
+    const result = await blogService.saveBlog(blogObj)
     setBlogs(blogs.concat(result))
     setNewBlog({ title: '', author: '', url: '' })
+    setMessage([`a new blog ${blogObj.title} by ${blogObj.author} added`, 'notification'])
+    setTimeout(() => {
+      setMessage([-1, ''])
+    }, 5000)
+
+
   }
 
   return (
     <div>
-      <Notification message={message} />
+      {      console.log(message[0], message[1])}
+      <Notification message={message[0]} className={message[1]} />
       {user === null ?
         <div>
           <LoginForm
