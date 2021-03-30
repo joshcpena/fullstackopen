@@ -58,6 +58,21 @@ const App = () => {
     })
   }
 
+  const saveBlog = async (event) => {
+    event.preventDefault()
+    const blogObj = {
+      title: newBlog.title,
+      author: newBlog.author || '',
+      url: newBlog.url,
+    }
+    console.log('sending ... ', blogObj)
+    const result = await blogService.saveBlog(blogObj)
+    console.log('result ... ', result)
+
+    setBlogs(blogs.concat(result))
+    setNewBlog({ title: '', author: '', url: '' })
+  }
+
   return (
     <div>
       <Notification message={message} />
@@ -76,7 +91,7 @@ const App = () => {
           <span>{user.username} logged in </span>
           <button onClick={handleLogout}>logout</button>
           <br /> <br />
-          <NewBlogForm newBlog={newBlog} handleNewBlog={handleNewBlog} />
+          <NewBlogForm newBlog={newBlog} saveBlog={saveBlog} handleNewBlog={handleNewBlog} />
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
           )}
