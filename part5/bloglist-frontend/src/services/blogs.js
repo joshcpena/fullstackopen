@@ -17,9 +17,30 @@ const saveBlog = async (blogObj) => {
   return response.data
 }
 
+const deleteBlog = async (blogId) => {
+  console.log('deleting Blog');
+}
+
+const addLike = async (blogObj) => {
+
+  const url = baseUrl.concat(`/${blogObj.id}`)
+
+  const newBlogObj = {
+    user: blogObj.user.id,
+    likes: blogObj.likes += 1,
+    author: blogObj.author,
+    title: blogObj.title,
+    url: blogObj.url,
+  }
+
+  const response = await axios
+    .put(url, newBlogObj)
+  return response.data
+}
+
 const setToken = (newToken) => {
   token = `bearer ${newToken}`
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { getAll, setToken, saveBlog };
+export default { getAll, setToken, saveBlog, addLike };

@@ -1,39 +1,64 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const NewBlogForm = ({ newBlog, handleNewBlog, saveBlog }) => (
-  <div>
-    <h2>create new blog entry</h2>
-    <form onSubmit={saveBlog}>
-      <div>
-        title:
+const NewBlogForm = ({ saveBlog }) => {
+
+  const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
+
+  const handleNewBlog = (event) => {
+    setNewBlog({
+      ...newBlog,
+      [event.target.name]: event.target.value
+    })
+  }
+
+  const addBlog = (event) => {
+    event.preventDefault()
+    const blogObj = {
+      title: newBlog.title,
+      author: newBlog.author || '',
+      url: newBlog.url,
+    }
+
+    setNewBlog({ title: '', author: '', url: '' })
+    saveBlog(blogObj)
+  }
+
+
+  return (
+    <div>
+      <h2>create new blog entry</h2>
+      <form onSubmit={addBlog}>
+        <div>
+          title:
       <input
-          type="text"
-          value={newBlog.title}
-          name="title"
-          onChange={handleNewBlog}
-        />
-      </div>
-      <div>
-        author:
+            type="text"
+            value={newBlog.title}
+            name="title"
+            onChange={handleNewBlog}
+          />
+        </div>
+        <div>
+          author:
       <input
-          type="text"
-          value={newBlog.author}
-          name="author"
-          onChange={handleNewBlog}
-        />
-      </div>
-      <div>
-        url:
+            type="text"
+            value={newBlog.author}
+            name="author"
+            onChange={handleNewBlog}
+          />
+        </div>
+        <div>
+          url:
       <input
-          type="text"
-          value={newBlog.url}
-          name="url"
-          onChange={handleNewBlog}
-        />
-      </div>
-      <button type="submit">save</button>
-    </form>
-  </div>
-)
+            type="text"
+            value={newBlog.url}
+            name="url"
+            onChange={handleNewBlog}
+          />
+        </div>
+        <button type="submit">save</button>
+      </form>
+    </div>
+  )
+}
 
 export default NewBlogForm

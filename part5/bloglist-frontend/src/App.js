@@ -5,18 +5,18 @@ import LoginForm from './components/LoginForm'
 import NewBlogForm from './components/NewBlogForm'
 import Notification from './components/Notification'
 import loginService from './services/login'
-
+import Togglable from './components/Togglable'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState([-1, ''])
   const [user, setUser] = useState(null)
-  const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs(blogs)
+      setBlogs(blogs.sort((a, b) => (a.likes > b.likes) ? -1 : 1))
+
     )
   }, [])
 
@@ -51,35 +51,28 @@ const App = () => {
     window.localStorage.removeItem('loggedInUser')
   }
 
-  const handleNewBlog = (event) => {
-    setNewBlog({
-      ...newBlog,
-      [event.target.name]: event.target.value
-    })
-  }
-
-  const saveBlog = async (event) => {
-    event.preventDefault()
-    const blogObj = {
-      title: newBlog.title,
-      author: newBlog.author || '',
-      url: newBlog.url,
-    }
-
+  const saveBlog = async (blogObj) => {
     const result = await blogService.saveBlog(blogObj)
-    setBlogs(blogs.concat(result))
-    setNewBlog({ title: '', author: '', url: '' })
+    setBlogs(blogs.concat(result).sort((a, b) => (a.likes > b.likes) ? -1 : 1))
     setMessage([`a new blog ${blogObj.title} by ${blogObj.author} added`, 'notification'])
     setTimeout(() => {
       setMessage([-1, ''])
     }, 5000)
+  }
 
+  const addLike = async (blog) => {
+    const result = await blogService.addLike(blog)
 
+    const newBlogs = blogs.map(element => (
+      result.id === element.id
+        ? result
+        : element
+    ))
+    setBlogs(newBlogs.sort((a, b) => (a.likes > b.likes) ? -1 : 1))
   }
 
   return (
     <div>
-      {      console.log(message[0], message[1])}
       <Notification message={message[0]} className={message[1]} />
       {user === null ?
         <div>
@@ -96,9 +89,11 @@ const App = () => {
           <span>{user.username} logged in </span>
           <button onClick={handleLogout}>logout</button>
           <br /> <br />
-          <NewBlogForm newBlog={newBlog} saveBlog={saveBlog} handleNewBlog={handleNewBlog} />
+          <Togglable buttonLabel={'new blog'}>
+            <NewBlogForm saveBlog={saveBlog} />
+          </Togglable>
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} addLike={addLike} />
           )}
         </div>}
 
