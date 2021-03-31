@@ -18,7 +18,12 @@ const saveBlog = async (blogObj) => {
 }
 
 const deleteBlog = async (blogId) => {
-  console.log('deleting Blog');
+  const config = {
+    headers: { Authorization: token },
+  }
+  const response = await axios
+    .delete(`${baseUrl}/${blogId}`, config)
+  return response
 }
 
 const addLike = async (blogObj) => {
@@ -43,4 +48,4 @@ const setToken = (newToken) => {
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { getAll, setToken, saveBlog, addLike };
+export default { getAll, setToken, saveBlog, addLike, deleteBlog };

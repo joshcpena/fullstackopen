@@ -60,6 +60,12 @@ const App = () => {
     }, 5000)
   }
 
+  const deleteBlog = async (blogId) => {
+    await blogService.deleteBlog(blogId)
+    const newList = blogs.filter(blog => blog.id !== blogId)
+    setBlogs(newList)
+  }
+
   const addLike = async (blog) => {
     const result = await blogService.addLike(blog)
 
@@ -93,7 +99,7 @@ const App = () => {
             <NewBlogForm saveBlog={saveBlog} />
           </Togglable>
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} addLike={addLike} />
+            <Blog key={blog.id} blog={blog} addLike={addLike} deleteBlog={deleteBlog} />
           )}
         </div>}
 
