@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types'
 
 const LoginForm = ({ handleLogin, username, setUsername, password, setPassword, errorMessage, setErrorMessage }) => (
   <div>

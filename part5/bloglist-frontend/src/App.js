@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import LoginForm from './components/LoginForm'
@@ -12,6 +12,7 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState([-1, ''])
   const [user, setUser] = useState(null)
+  const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -37,6 +38,7 @@ const App = () => {
         'loggedInUser', JSON.stringify(user)
       )
       setUser(user);
+      blogService.setToken(user.token)
       setUsername('');
       setPassword('')
     } catch (exception) {
@@ -60,10 +62,13 @@ const App = () => {
     }, 5000)
   }
 
-  const deleteBlog = async (blogId) => {
-    await blogService.deleteBlog(blogId)
-    const newList = blogs.filter(blog => blog.id !== blogId)
-    setBlogs(newList)
+  const deleteBlog = async (blog) => {
+    const result = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
+    if (result) {
+      await blogService.deleteBlog(blog.id)
+      const newList = blogs.filter(element => element.id !== blog.id)
+      setBlogs(newList)
+    }
   }
 
   const addLike = async (blog) => {
@@ -99,7 +104,13 @@ const App = () => {
             <NewBlogForm saveBlog={saveBlog} />
           </Togglable>
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} addLike={addLike} deleteBlog={deleteBlog} />
+            <Blog
+              key={blog.id}
+              blog={blog}
+              addLike={addLike}
+              username={user.username}
+              deleteBlog={deleteBlog}
+            />
           )}
         </div>}
 
