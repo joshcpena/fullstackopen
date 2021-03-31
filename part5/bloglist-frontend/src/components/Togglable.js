@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useImperativeHandle } from 'react'
 import PropTypes from 'prop-types'
 
 const Togglable = React.forwardRef((props, ref) => {
@@ -8,6 +8,10 @@ const Togglable = React.forwardRef((props, ref) => {
   const showWhenVisable = { display: visable ? '' : 'none' }
 
   const toggleVisability = () => setVisable(!visable)
+
+  useImperativeHandle(ref, () => {
+    return { toggleVisability }
+  })
 
   return (
     <div>

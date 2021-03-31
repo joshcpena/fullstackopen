@@ -12,6 +12,7 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState([-1, ''])
   const [user, setUser] = useState(null)
+
   const blogFormRef = useRef()
 
   useEffect(() => {
@@ -54,6 +55,7 @@ const App = () => {
   }
 
   const saveBlog = async (blogObj) => {
+    blogFormRef.current.toggleVisability()
     const result = await blogService.saveBlog(blogObj)
     setBlogs(blogs.concat(result).sort((a, b) => (a.likes > b.likes) ? -1 : 1))
     setMessage([`a new blog ${blogObj.title} by ${blogObj.author} added`, 'notification'])
@@ -100,7 +102,7 @@ const App = () => {
           <span>{user.username} logged in </span>
           <button onClick={handleLogout}>logout</button>
           <br /> <br />
-          <Togglable buttonLabel={'new blog'}>
+          <Togglable buttonLabel={'new blog'} ref={blogFormRef}>
             <NewBlogForm saveBlog={saveBlog} />
           </Togglable>
           {blogs.map(blog =>
