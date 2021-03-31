@@ -1,15 +1,24 @@
-import React from 'react'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 const Notification = ({ message, className }) => {
   if (message === -1) {
-    return null
+    return null;
   }
 
   return (
     <div className={className}>
       {message}
     </div>
-  )
-}
+  );
+};
 
-export default Notification
+Notification.propTypes = {
+  message: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
+  className: PropTypes.string.isRequired,
+};
+
+export default Notification;

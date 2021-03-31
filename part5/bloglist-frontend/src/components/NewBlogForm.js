@@ -1,28 +1,27 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
 const NewBlogForm = ({ saveBlog }) => {
-
-  const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
+  const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' });
 
   const handleNewBlog = (event) => {
     setNewBlog({
       ...newBlog,
-      [event.target.name]: event.target.value
-    })
-  }
+      [event.target.name]: event.target.value,
+    });
+  };
 
   const addBlog = (event) => {
-    event.preventDefault()
+    event.preventDefault();
     const blogObj = {
       title: newBlog.title,
       author: newBlog.author || '',
       url: newBlog.url,
-    }
+    };
 
-    setNewBlog({ title: '', author: '', url: '' })
-    saveBlog(blogObj)
-  }
-
+    setNewBlog({ title: '', author: '', url: '' });
+    saveBlog(blogObj);
+  };
 
   return (
     <div>
@@ -30,7 +29,7 @@ const NewBlogForm = ({ saveBlog }) => {
       <form onSubmit={addBlog}>
         <div>
           title:
-      <input
+          <input
             type="text"
             value={newBlog.title}
             name="title"
@@ -39,7 +38,7 @@ const NewBlogForm = ({ saveBlog }) => {
         </div>
         <div>
           author:
-      <input
+          <input
             type="text"
             value={newBlog.author}
             name="author"
@@ -48,7 +47,7 @@ const NewBlogForm = ({ saveBlog }) => {
         </div>
         <div>
           url:
-      <input
+          <input
             type="text"
             value={newBlog.url}
             name="url"
@@ -58,7 +57,11 @@ const NewBlogForm = ({ saveBlog }) => {
         <button type="submit">save</button>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default NewBlogForm
+NewBlogForm.propTypes = {
+  saveBlog: PropTypes.func.isRequired,
+};
+
+export default NewBlogForm;
