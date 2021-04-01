@@ -24,7 +24,7 @@ const NewBlogForm = ({ saveBlog }) => {
   };
 
   return (
-    <div>
+    <div className="formDiv">
       <h2>create new blog entry</h2>
       <form onSubmit={addBlog}>
         <div>
