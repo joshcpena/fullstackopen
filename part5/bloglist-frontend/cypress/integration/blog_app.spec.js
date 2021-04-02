@@ -101,7 +101,7 @@ describe('Blog app', function blogApp() {
           .should('not.contain', 'Valdimir');
       });
 
-      it.only('new blogs are sorted by likes', function deleteBlog() {
+      it('new blogs are sorted by likes', function deleteBlog() {
         cy.createBlog({ title: 'blog_1', author: 'Navalny', url: 'russia.com' });
         cy.createBlog({ title: 'blog_2', author: 'Valdimir', url: 'vald.com' });
         cy.createBlog({ title: 'blog_3', author: 'Victor', url: 'vic.com' });
