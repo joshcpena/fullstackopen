@@ -104,7 +104,11 @@ const App = () => {
           <div>
             <h2>blogs</h2>
             <span>
+              {user.name}
+              {' '}
+              (
               {user.username}
+              )
               {' '}
               logged in
               {' '}

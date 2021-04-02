@@ -19,7 +19,7 @@ const Blog = ({
         {blog.title}
         {' '}
         {blog.author}
-        <button type="button" onClick={() => setVisible(!visible)}>view</button>
+        <button id="view-button" type="button" onClick={() => setVisible(!visible)}>view</button>
         {' '}
         <br />
       </div>
@@ -27,7 +27,7 @@ const Blog = ({
   }
   if (visible) {
     return (
-      <div style={blogStyle}>
+      <div id="visible-blog" style={blogStyle}>
         {blog.title}
         {' '}
         {blog.author}
@@ -40,12 +40,12 @@ const Blog = ({
         likes
         {' '}
         {blog.likes}
-        <button type="button" onClick={() => addLike(blog)}>like</button>
+        <button id="like-button" type="button" onClick={() => addLike(blog)}>like</button>
         <br />
         {blog.user.username}
         <br />
         {username === blog.user.username
-          && <button type="button" onClick={() => deleteBlog(blog)}>remove</button>}
+          && <button id="remove-button" type="button" onClick={() => deleteBlog(blog)}>remove</button>}
       </div>
     );
   }
