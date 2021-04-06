@@ -13,13 +13,14 @@ const clearMessage = () => ({
   type: 'SET_MESSAGE',
   data: '',
 });
-
+let timeoutId;
 export const setMessage = (message, seconds) => async (dispatch) => {
   dispatch({
     type: 'SET_MESSAGE',
     data: message,
   });
-  await setTimeout(() => dispatch(clearMessage()), seconds * 1000);
+  clearTimeout(timeoutId);
+  timeoutId = await setTimeout(() => dispatch(clearMessage()), seconds * 1000);
 };
 
 export default notificationReducer;
