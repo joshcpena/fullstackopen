@@ -1,13 +1,15 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
-const Notification = () => {
+const Notification = (props) => {
   const style = {
     border: 'solid',
     padding: 10,
     borderWidth: 1,
   };
-  const message = useSelector((state) => state.notification);
+  // const message = useSelector((state) => state.notification);
+  const { message } = props;
   if (message.length > 0) {
     return (
       <div style={style}>
@@ -18,4 +20,9 @@ const Notification = () => {
   return <div />;
 };
 
-export default Notification;
+Notification.propTypes = {
+  message: PropTypes.string.isRequired,
+};
+const mapStateToProps = (state) => ({ message: state.notification });
+
+export default connect(mapStateToProps)(Notification);
