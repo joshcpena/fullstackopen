@@ -5,12 +5,13 @@ import { setMessage } from '../reducers/notificationReducer';
 
 const AnecdoteForm = () => {
   const dispatch = useDispatch();
-  const addAnecdote = (event) => {
+
+  const addAnecdote = async (event) => {
     event.preventDefault();
     const content = event.target.anecdote.value;
+
     dispatch(createAnecdote(content));
-    dispatch(setMessage(`you added: '${content}'`));
-    setTimeout(() => dispatch(setMessage('')), 5000);
+    dispatch(setMessage(`you added: '${content}'`, 5));
   };
 
   return (

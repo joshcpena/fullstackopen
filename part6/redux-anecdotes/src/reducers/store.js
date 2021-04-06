@@ -1,6 +1,6 @@
-import { createStore, combineReducers } from 'redux';
-// eslint-disable-next-line import/no-extraneous-dependencies
+import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import thunk from 'redux-thunk';
 import anecdoteReducer from './anecdoteReducer';
 import notificationReducer from './notificationReducer';
 import filterReducer from './filterReducer';
@@ -9,7 +9,9 @@ const store = createStore(
   combineReducers(
     { anecdotes: anecdoteReducer, notification: notificationReducer, filter: filterReducer },
   ),
-  composeWithDevTools(),
+  composeWithDevTools(
+    applyMiddleware(thunk),
+  ),
 );
 
 export default store;

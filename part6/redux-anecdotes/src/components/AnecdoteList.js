@@ -9,9 +9,8 @@ const AnecdoteList = () => {
   const dispatch = useDispatch();
 
   const vote = (ancedote) => {
-    dispatch(incrementVote(ancedote.id));
-    dispatch(setMessage(`you voted ${ancedote.content}`));
-    setTimeout(() => dispatch(setMessage('')), 5000);
+    dispatch(incrementVote(ancedote));
+    dispatch(setMessage(`you voted ${ancedote.content}`, 5));
   };
 
   return (
@@ -25,6 +24,7 @@ const AnecdoteList = () => {
             </div>
             <div>
               has
+              {' '}
               {anecdote.votes}
               <button type="button" onClick={() => vote(anecdote)}>vote</button>
             </div>
