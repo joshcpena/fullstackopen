@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { BrowserRouter as Router, Switch, Link, Route, useRouteMatch, Redirect, useHistory } from 'react-router-dom'
+import { useField } from './hooks'
 const Menu = () => {
   const padding = {
     paddingRight: 5
@@ -47,24 +48,24 @@ const Footer = () => (
   </div>
 )
 
-const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
+const CreateNew = ({ addNew, setNotification }) => {
+  const { reset: resetContent, ...content } = useField('text')
+  const { reset: resetAuthor, ...author } = useField('text')
+  const { reset: resetInfo, ...info } = useField('text')
   const history = useHistory()
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    props.addNew({
-      content,
-      author,
-      info,
+    addNew({
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0
     })
     history.push("/")
-    props.setNotification(`a new anecdote ${content} created!`)
+    setNotification(`a new anecdote ${content.value} created!`)
     setTimeout(() => {
-      props.setNotification('')
+      setNotification('')
     }, 10000);
   }
 
@@ -74,28 +75,33 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+          <input {...content} />
         </div>
         <div>
           author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
+          <input {...author} />
         </div>
         <div>
           url for more info
-          <input name='info' value={info} onChange={(e) => setInfo(e.target.value)} />
+          <input {...info} />
         </div>
-        <button>create</button>
+        <button type="submit">create</button>
+        <button type="reset" onClick={() => {
+          resetContent()
+          resetAuthor()
+          resetInfo()
+        }}>clear</button>
       </form>
-    </div>
+    </div >
   )
 
 }
 
 const Anecdote = ({ anecdote }) => (
   <div>
-    <h2>{anecdote.content}</h2>
+    <h2>{anecdote.content} by {anecdote.author}</h2>
     <div>{`has ${anecdote.votes} votes`}</div>
-    <div>for more information see <a href={anecdote.url}>{anecdote.url}</a></div>
+    <div>for more information see <a href={anecdote.info}>{anecdote.info}</a></div>
   </div>
 )
 
