@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Blog from './components/Blog';
 import blogService from './services/blogs';
 import LoginForm from './components/LoginForm';
@@ -6,15 +7,17 @@ import NewBlogForm from './components/NewBlogForm';
 import Notification from './components/Notification';
 import loginService from './services/login';
 import Togglable from './components/Togglable';
+import { setMessage } from './reducers/notificationReducer';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState([-1, '']);
+  // const [message, setMessage] = useState([-1, '']);
   const [user, setUser] = useState(null);
 
   const blogFormRef = useRef();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     blogService
@@ -43,10 +46,11 @@ const App = () => {
       setUsername('');
       setPassword('');
     } catch (exception) {
-      setMessage(['Wrong username or password', 'error']);
-      setTimeout(() => {
-        setMessage([-1, '']);
-      }, 5000);
+      dispatch(setMessage('Wrong username or password', 'error', 5));
+      // setMessage(['Wrong username or password', 'error']);
+      // setTimeout(() => {
+      //   setMessage([-1, '']);
+      // }, 5000);
     }
   };
   const handleLogout = () => {
@@ -84,10 +88,12 @@ const App = () => {
     ));
     setBlogs(newBlogs.sort((a, b) => ((a.likes > b.likes) ? -1 : 1)));
   };
+  const message = useSelector((state) => state.message);
+  const className = useSelector((state) => state.className);
 
   return (
     <div>
-      <Notification message={message[0]} className={message[1]} />
+      <Notification message={message} className={className} />
       {user === null
         ? (
           <div>
