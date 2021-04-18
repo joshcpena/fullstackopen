@@ -13,12 +13,8 @@ import {
 import { initializeLocalUser, initializeUser, logoutUser } from './reducers/userReducer';
 
 const App = () => {
-  // const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  // const [message, setMessage] = useState([-1, '']);
-  // const [user, setUser] = useState(null);
-
   const blogFormRef = useRef();
   const dispatch = useDispatch();
   const blogs = useSelector((state) => state.blogs);
