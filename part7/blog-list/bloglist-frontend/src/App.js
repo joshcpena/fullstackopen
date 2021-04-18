@@ -8,9 +8,10 @@ import Notification from './components/Notification';
 import loginService from './services/login';
 import Togglable from './components/Togglable';
 import { setMessage } from './reducers/notificationReducer';
+import { initializeBlogs, createBlog, removeBlog } from './reducers/blogReducer';
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+  // const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   // const [message, setMessage] = useState([-1, '']);
@@ -18,11 +19,10 @@ const App = () => {
 
   const blogFormRef = useRef();
   const dispatch = useDispatch();
+  const blogs = useSelector((state) => state.blogs);
 
   useEffect(() => {
-    blogService
-      .getAll()
-      .then((result) => setBlogs(result.sort((a, b) => ((a.likes > b.likes) ? -1 : 1))));
+    dispatch(initializeBlogs());
   }, []);
 
   useEffect(() => {
@@ -47,10 +47,6 @@ const App = () => {
       setPassword('');
     } catch (exception) {
       dispatch(setMessage('Wrong username or password', 'error', 5));
-      // setMessage(['Wrong username or password', 'error']);
-      // setTimeout(() => {
-      //   setMessage([-1, '']);
-      // }, 5000);
     }
   };
   const handleLogout = () => {
@@ -60,33 +56,28 @@ const App = () => {
 
   const saveBlog = async (blogObj) => {
     blogFormRef.current.toggleVisability();
-    const result = await blogService.saveBlog(blogObj);
-    setBlogs(blogs.concat(result).sort((a, b) => ((a.likes > b.likes) ? -1 : 1)));
-    setMessage([`a new blog ${blogObj.title} by ${blogObj.author} added`, 'notification']);
-    setTimeout(() => {
-      setMessage([-1, '']);
-    }, 5000);
+    dispatch(createBlog(blogObj));
+    dispatch(setMessage(`a new blog ${blogObj.title} by ${blogObj.author} added`, 'notification', 5));
   };
 
   const deleteBlog = async (blog) => {
     // eslint-disable-next-line no-alert
     const result = window.confirm(`Remove blog ${blog.title} by ${blog.author}`);
     if (result) {
-      await blogService.deleteBlog(blog.id);
-      const newList = blogs.filter((element) => element.id !== blog.id);
-      setBlogs(newList);
+      dispatch(removeBlog(blog));
     }
   };
 
   const addLike = async (blog) => {
-    const result = await blogService.addLike(blog);
+    console.log('liking:', blog);
+    // const result = await blogService.addLike(blog);
 
-    const newBlogs = blogs.map((element) => (
-      result.id === element.id
-        ? result
-        : element
-    ));
-    setBlogs(newBlogs.sort((a, b) => ((a.likes > b.likes) ? -1 : 1)));
+    // // const newBlogs = blogs.map((element) => (
+    // //   result.id === element.id
+    // //     ? result
+    // //     : element
+    // // ));
+    // // // setBlogs(newBlogs.sort((a, b) => ((a.likes > b.likes) ? -1 : 1)));
   };
   const message = useSelector((state) => state.message);
   const className = useSelector((state) => state.className);
