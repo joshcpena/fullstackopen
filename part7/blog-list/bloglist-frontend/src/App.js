@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Blog from './components/Blog';
-import blogService from './services/blogs';
 import LoginForm from './components/LoginForm';
 import NewBlogForm from './components/NewBlogForm';
 import Notification from './components/Notification';
@@ -11,17 +10,19 @@ import { setMessage } from './reducers/notificationReducer';
 import {
   initializeBlogs, createBlog, removeBlog, incrementBlogLike,
 } from './reducers/blogReducer';
+import { initializeLocalUser, initializeUser, logoutUser } from './reducers/userReducer';
 
 const App = () => {
   // const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   // const [message, setMessage] = useState([-1, '']);
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
 
   const blogFormRef = useRef();
   const dispatch = useDispatch();
   const blogs = useSelector((state) => state.blogs);
+  const user = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(initializeBlogs());
@@ -30,9 +31,7 @@ const App = () => {
   useEffect(() => {
     const loggedUserJson = window.localStorage.getItem('loggedInUser');
     if (loggedUserJson) {
-      const loggedUser = JSON.parse(loggedUserJson);
-      setUser(loggedUser);
-      blogService.setToken(loggedUser.token);
+      dispatch(initializeLocalUser(loggedUserJson));
     }
   }, []);
 
@@ -43,8 +42,7 @@ const App = () => {
       window.localStorage.setItem(
         'loggedInUser', JSON.stringify(loggedUser),
       );
-      setUser(loggedUser);
-      blogService.setToken(loggedUser.token);
+      dispatch(initializeUser(loggedUser));
       setUsername('');
       setPassword('');
     } catch (exception) {
@@ -52,7 +50,7 @@ const App = () => {
     }
   };
   const handleLogout = () => {
-    setUser(null);
+    dispatch(logoutUser());
     window.localStorage.removeItem('loggedInUser');
   };
 
