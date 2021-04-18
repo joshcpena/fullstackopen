@@ -8,7 +8,9 @@ import Notification from './components/Notification';
 import loginService from './services/login';
 import Togglable from './components/Togglable';
 import { setMessage } from './reducers/notificationReducer';
-import { initializeBlogs, createBlog, removeBlog } from './reducers/blogReducer';
+import {
+  initializeBlogs, createBlog, removeBlog, incrementBlogLike,
+} from './reducers/blogReducer';
 
 const App = () => {
   // const [blogs, setBlogs] = useState([]);
@@ -69,15 +71,8 @@ const App = () => {
   };
 
   const addLike = async (blog) => {
-    console.log('liking:', blog);
-    // const result = await blogService.addLike(blog);
-
-    // // const newBlogs = blogs.map((element) => (
-    // //   result.id === element.id
-    // //     ? result
-    // //     : element
-    // // ));
-    // // // setBlogs(newBlogs.sort((a, b) => ((a.likes > b.likes) ? -1 : 1)));
+    dispatch(incrementBlogLike(blog));
+    dispatch(setMessage(`you liked ${blog.title} by ${blog.author}`, 'notification', 5));
   };
   const message = useSelector((state) => state.message);
   const className = useSelector((state) => state.className);

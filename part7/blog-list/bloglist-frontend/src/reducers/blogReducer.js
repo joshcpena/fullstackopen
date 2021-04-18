@@ -14,8 +14,16 @@ const blogReducer = (state = initialBlogs, action) => {
     }
     case 'REMOVE_BLOG': {
       const newList = state.filter((element) => element.id !== action.data.id);
-
       return newList;
+    }
+    case 'INCREMENT_BLOG_LIKE': {
+      const newBlogs = state.map((element) => (
+        action.data.id === element.id
+          ? action.data
+          : element
+      ));
+      newBlogs.sort((a, b) => ((a.likes > b.likes) ? -1 : 1));
+      return newBlogs;
     }
     default: return state;
   }
@@ -45,6 +53,14 @@ export const removeBlog = (blog) => async (dispatch) => {
   dispatch({
     type: 'REMOVE_BLOG',
     data: blog,
+  });
+};
+
+export const incrementBlogLike = (blog) => async (dispatch) => {
+  const result = await blogService.addLike(blog);
+  dispatch({
+    type: 'INCREMENT_BLOG_LIKE',
+    data: result,
   });
 };
 
