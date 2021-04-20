@@ -10,6 +10,7 @@ import LoginForm from './components/LoginForm';
 import NewBlogForm from './components/NewBlogForm';
 import Notification from './components/Notification';
 import Togglable from './components/Togglable';
+import User from './components/User';
 // import { setMessage } from './reducers/notificationReducer';
 import { initializeBlogs } from './reducers/blogReducer';
 import { initializeLocalUser, logoutUser } from './reducers/userReducer';
@@ -54,28 +55,30 @@ const App = () => {
           />
         )
         : (
-          <Switch>
-            <Route path="/users">
-              SomeUserInfogoesHeress
-            </Route>
-            <Route path="/">
-              <h2>blogs</h2>
-              <span>
-                {`${user.name} ${user.username} logged in`}
-              </span>
-              <button type="button" onClick={handleLogout}>logout</button>
-              <Togglable buttonLabel="new blog" ref={blogFormRef}>
-                <NewBlogForm blogFormRef={blogFormRef} />
-              </Togglable>
-              {blogs.map((blog) => (
-                <Blog
-                  key={blog.id}
-                  blog={blog}
-                  username={user.username}
-                />
-              ))}
-            </Route>
-          </Switch>
+          <div>
+            <h2>blogs</h2>
+            <span>
+              {`${user.name} ${user.username} logged in`}
+            </span>
+            <button type="button" onClick={handleLogout}>logout</button>
+            <Switch>
+              <Route path="/users">
+                <User />
+              </Route>
+              <Route path="/">
+                <Togglable buttonLabel="new blog" ref={blogFormRef}>
+                  <NewBlogForm blogFormRef={blogFormRef} />
+                </Togglable>
+                {blogs.map((blog) => (
+                  <Blog
+                    key={blog.id}
+                    blog={blog}
+                    username={user.username}
+                  />
+                ))}
+              </Route>
+            </Switch>
+          </div>
         )}
     </Router>
 
