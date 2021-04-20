@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { setMessage } from '../reducers/notificationReducer';
+import {
+  removeBlog, incrementBlogLike,
+} from '../reducers/blogReducer';
 
 const Blog = ({
-  blog, addLike, deleteBlog, username,
+  blog, username,
 }) => {
+  const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
   const blogStyle = {
     paddingTop: 10,
@@ -11,6 +17,18 @@ const Blog = ({
     border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
+  };
+  const deleteBlog = async (blogObj) => {
+    // eslint-disable-next-line no-alert
+    const result = window.confirm(`Remove blog ${blogObj.title} by ${blogObj.author}`);
+    if (result) {
+      dispatch(removeBlog(blogObj));
+    }
+  };
+
+  const addLike = async (blogObj) => {
+    dispatch(incrementBlogLike(blog));
+    dispatch(setMessage(`you liked ${blogObj.title} by ${blogObj.author}`, 'notification', 5));
   };
 
   if (!visible) {
@@ -62,8 +80,6 @@ Blog.propTypes = {
       username: PropTypes.string.isRequired,
     }),
   }).isRequired,
-  addLike: PropTypes.func.isRequired,
-  deleteBlog: PropTypes.func.isRequired,
   username: PropTypes.string.isRequired,
 };
 

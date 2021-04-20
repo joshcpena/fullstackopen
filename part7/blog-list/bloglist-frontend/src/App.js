@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import {
+  BrowserRouter as Router,
+  Switch, Route,
+} from 'react-router-dom';
+
 import Blog from './components/Blog';
 import LoginForm from './components/LoginForm';
 import NewBlogForm from './components/NewBlogForm';
 import Notification from './components/Notification';
-import loginService from './services/login';
 import Togglable from './components/Togglable';
-import { setMessage } from './reducers/notificationReducer';
-import {
-  initializeBlogs, createBlog, removeBlog, incrementBlogLike,
-} from './reducers/blogReducer';
-import { initializeLocalUser, initializeUser, logoutUser } from './reducers/userReducer';
+// import { setMessage } from './reducers/notificationReducer';
+import { initializeBlogs } from './reducers/blogReducer';
+import { initializeLocalUser, logoutUser } from './reducers/userReducer';
 
 const App = () => {
   const [username, setUsername] = useState('');
@@ -31,94 +33,52 @@ const App = () => {
     }
   }, []);
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    try {
-      const loggedUser = await loginService({ username, password });
-      window.localStorage.setItem(
-        'loggedInUser', JSON.stringify(loggedUser),
-      );
-      dispatch(initializeUser(loggedUser));
-      setUsername('');
-      setPassword('');
-    } catch (exception) {
-      dispatch(setMessage('Wrong username or password', 'error', 5));
-    }
-  };
   const handleLogout = () => {
     dispatch(logoutUser());
     window.localStorage.removeItem('loggedInUser');
   };
 
-  const saveBlog = async (blogObj) => {
-    blogFormRef.current.toggleVisability();
-    dispatch(createBlog(blogObj));
-    dispatch(setMessage(`a new blog ${blogObj.title} by ${blogObj.author} added`, 'notification', 5));
-  };
-
-  const deleteBlog = async (blog) => {
-    // eslint-disable-next-line no-alert
-    const result = window.confirm(`Remove blog ${blog.title} by ${blog.author}`);
-    if (result) {
-      dispatch(removeBlog(blog));
-    }
-  };
-
-  const addLike = async (blog) => {
-    dispatch(incrementBlogLike(blog));
-    dispatch(setMessage(`you liked ${blog.title} by ${blog.author}`, 'notification', 5));
-  };
   const message = useSelector((state) => state.message);
   const className = useSelector((state) => state.className);
 
   return (
-    <div>
+    <Router>
       <Notification message={message} className={className} />
       {user === null
         ? (
-          <div>
-            <LoginForm
-              handleLogin={handleLogin}
-              username={username}
-              setUsername={setUsername}
-              password={password}
-              setPassword={setPassword}
-            />
-          </div>
+          <LoginForm
+            username={username}
+            setUsername={setUsername}
+            password={password}
+            setPassword={setPassword}
+          />
         )
         : (
-          <div>
-            <h2>blogs</h2>
-            <span>
-              {user.name}
-              {' '}
-              (
-              {user.username}
-              )
-              {' '}
-              logged in
-              {' '}
-            </span>
-            <button type="button" onClick={handleLogout}>logout</button>
-            <br />
-            {' '}
-            <br />
-            <Togglable buttonLabel="new blog" ref={blogFormRef}>
-              <NewBlogForm saveBlog={saveBlog} />
-            </Togglable>
-            {blogs.map((blog) => (
-              <Blog
-                key={blog.id}
-                blog={blog}
-                addLike={addLike}
-                username={user.username}
-                deleteBlog={deleteBlog}
-              />
-            ))}
-          </div>
+          <Switch>
+            <Route path="/users">
+              SomeUserInfogoesHeress
+            </Route>
+            <Route path="/">
+              <h2>blogs</h2>
+              <span>
+                {`${user.name} ${user.username} logged in`}
+              </span>
+              <button type="button" onClick={handleLogout}>logout</button>
+              <Togglable buttonLabel="new blog" ref={blogFormRef}>
+                <NewBlogForm blogFormRef={blogFormRef} />
+              </Togglable>
+              {blogs.map((blog) => (
+                <Blog
+                  key={blog.id}
+                  blog={blog}
+                  username={user.username}
+                />
+              ))}
+            </Route>
+          </Switch>
         )}
+    </Router>
 
-    </div>
   );
 };
 
