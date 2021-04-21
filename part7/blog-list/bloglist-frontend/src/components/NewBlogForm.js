@@ -74,7 +74,7 @@ const NewBlogForm = ({ blogFormRef }) => {
 };
 
 NewBlogForm.propTypes = {
-  blogFormRef: PropTypes.func.isRequired,
+  blogFormRef: PropTypes.shape().isRequired,
 };
 
 export default NewBlogForm;

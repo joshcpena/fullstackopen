@@ -10,7 +10,7 @@ import LoginForm from './components/LoginForm';
 import NewBlogForm from './components/NewBlogForm';
 import Notification from './components/Notification';
 import Togglable from './components/Togglable';
-import User from './components/User';
+import Users from './components/Users';
 // import { setMessage } from './reducers/notificationReducer';
 import { initializeBlogs } from './reducers/blogReducer';
 import { initializeLocalUser, logoutUser } from './reducers/userReducer';
@@ -57,13 +57,11 @@ const App = () => {
         : (
           <div>
             <h2>blogs</h2>
-            <span>
-              {`${user.name} ${user.username} logged in`}
-            </span>
+            <p>{`${user.name} ${user.username} logged in`}</p>
             <button type="button" onClick={handleLogout}>logout</button>
             <Switch>
               <Route path="/users">
-                <User />
+                <Users />
               </Route>
               <Route path="/">
                 <Togglable buttonLabel="new blog" ref={blogFormRef}>
