@@ -60,6 +60,9 @@ const App = () => {
             <p>{`${user.name} ${user.username} logged in`}</p>
             <button type="button" onClick={handleLogout}>logout</button>
             <Switch>
+              <Route path="/users/:id">
+                <Users />
+              </Route>
               <Route path="/users">
                 <Users />
               </Route>
