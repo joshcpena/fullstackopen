@@ -1,12 +1,14 @@
 // import React, { useState } from 'react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams, Link, Redirect } from 'react-router-dom';
+
 import { setMessage } from '../reducers/notificationReducer';
 import {
   removeBlog, incrementBlogLike,
 } from '../reducers/blogReducer';
+import { getComments } from '../reducers/commentReducer';
 
 const Blog = ({
   blog, username,
@@ -19,6 +21,11 @@ const Blog = ({
     borderWidth: 1,
     marginBottom: 5,
   };
+
+  useEffect(() => {
+    dispatch(getComments());
+  }, []);
+
   const deleteBlog = async (blogObj) => {
     // eslint-disable-next-line no-alert
     const result = window.confirm(`Remove blog ${blogObj.title} by ${blogObj.author}`);
@@ -32,12 +39,14 @@ const Blog = ({
     dispatch(setMessage(`you liked ${blogObj.title} by ${blogObj.author}`, 'notification', 5));
   };
 
+  const comments = useSelector((state) => state.comment);
   const { id } = useParams();
   if (id) {
     if (typeof (blog) === 'undefined') {
       dispatch(setMessage(`blog with id ${id} not found, redirecting...`, 'error', 5));
       return (<Redirect to="/" />);
     }
+    comments.filter((e) => e.id === comments.blogId);
     return (
       <div>
         <h2>{blog.title}</h2>
@@ -53,6 +62,8 @@ const Blog = ({
         <br />
         {username === blog.user.username
           && <button id="remove-button" type="button" onClick={() => deleteBlog(blog)}>remove</button>}
+        <p>comments:</p>
+        {comments && comments.map((comment) => <li>{comment.conent}</li>)}
       </div>
     );
   }
