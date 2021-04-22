@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  BrowserRouter as Router,
-  Switch, Route,
+  Switch, Route, useRouteMatch,
 } from 'react-router-dom';
 
 import Blog from './components/Blog';
@@ -23,6 +22,10 @@ const App = () => {
   const blogs = useSelector((state) => state.blogs);
   const user = useSelector((state) => state.user);
 
+  const blogId = useRouteMatch('/blogs/:id');
+  const blogById = blogId ? blogs
+    .find((e) => e.id === blogId.params.id) : blogs[0];
+
   useEffect(() => {
     dispatch(initializeBlogs());
   }, []);
@@ -42,8 +45,9 @@ const App = () => {
   const message = useSelector((state) => state.message);
   const className = useSelector((state) => state.className);
 
+  if (blogs && blogs.length === 0) return null;
   return (
-    <Router>
+    <div>
       <Notification message={message} className={className} />
       {user === null
         ? (
@@ -66,6 +70,9 @@ const App = () => {
               <Route path="/users">
                 <Users />
               </Route>
+              <Route path="/blogs/:id">
+                <Blog blog={blogById} username={user.username} />
+              </Route>
               <Route path="/">
                 <Togglable buttonLabel="new blog" ref={blogFormRef}>
                   <NewBlogForm blogFormRef={blogFormRef} />
@@ -81,8 +88,7 @@ const App = () => {
             </Switch>
           </div>
         )}
-    </Router>
-
+    </div>
   );
 };
 

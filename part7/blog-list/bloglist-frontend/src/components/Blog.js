@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
+import { useParams, Link, Redirect } from 'react-router-dom';
 import { setMessage } from '../reducers/notificationReducer';
 import {
   removeBlog, incrementBlogLike,
@@ -10,7 +12,6 @@ const Blog = ({
   blog, username,
 }) => {
   const dispatch = useDispatch();
-  const [visible, setVisible] = useState(false);
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -31,43 +32,35 @@ const Blog = ({
     dispatch(setMessage(`you liked ${blogObj.title} by ${blogObj.author}`, 'notification', 5));
   };
 
-  if (!visible) {
+  const { id } = useParams();
+  if (id) {
+    if (typeof (blog) === 'undefined') {
+      dispatch(setMessage(`blog with id ${id} not found, redirecting...`, 'error', 5));
+      return (<Redirect to="/" />);
+    }
     return (
-      <div style={blogStyle}>
-        {blog.title}
-        {' '}
-        {blog.author}
-        <button id="view-button" type="button" onClick={() => setVisible(!visible)}>view</button>
+      <div>
+        <h2>{blog.title}</h2>
+        <a href={blog.url}>{blog.url}</a>
         {' '}
         <br />
-      </div>
-    );
-  }
-  if (visible) {
-    return (
-      <div id="visible-blog" style={blogStyle}>
-        {blog.title}
-        {' '}
-        {blog.author}
-        <button type="button" onClick={() => setVisible(!visible)}>hide</button>
-        {' '}
-        <br />
-        {blog.url}
-        {' '}
-        <br />
-        likes
-        {' '}
-        {blog.likes}
+        {`${blog.likes} likes`}
         <button id="like-button" type="button" onClick={() => addLike(blog)}>like</button>
+        {' '}
         <br />
-        {blog.user.username}
+        {`added by ${blog.user.username}`}
+        {' '}
         <br />
         {username === blog.user.username
           && <button id="remove-button" type="button" onClick={() => deleteBlog(blog)}>remove</button>}
       </div>
     );
   }
-  return null;
+  return (
+    <div style={blogStyle}>
+      <Link to={`/blogs/${blog.id}`}>{`${blog.title} ${blog.author}`}</Link>
+    </div>
+  );
 };
 
 Blog.propTypes = {
@@ -76,6 +69,7 @@ Blog.propTypes = {
     author: PropTypes.string.isRequired,
     url: PropTypes.string.isRequired,
     likes: PropTypes.number.isRequired,
+    id: PropTypes.string.isRequired,
     user: PropTypes.shape({
       username: PropTypes.string.isRequired,
     }),
