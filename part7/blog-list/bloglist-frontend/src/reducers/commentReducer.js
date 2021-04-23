@@ -24,7 +24,6 @@ export const getComments = () => async (dispatch) => {
 
 export const addComment = (content, blogId) => async (dispatch) => {
   const commentObj = { content, blogId };
-  console.log('text', content, 'blogid', blogId);
   const result = await commentService.addComment(commentObj);
   dispatch({
     type: 'ADD_COMMENT',

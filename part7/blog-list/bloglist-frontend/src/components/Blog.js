@@ -46,7 +46,6 @@ const Blog = ({
   };
 
   const comments = useSelector((state) => state.comment);
-  console.log(comments);
   const { id } = useParams();
   if (id) {
     if (typeof (blog) === 'undefined') {
