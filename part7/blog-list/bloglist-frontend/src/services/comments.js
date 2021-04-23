@@ -7,6 +7,11 @@ const getAll = () => {
   return request.then((response) => response.data);
 };
 
+const addComment = async (commentObj) => {
+  const response = await axios.post(baseUrl, commentObj);
+  return response.data;
+};
+
 export default {
-  getAll,
+  getAll, addComment,
 };
