@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useParams, Link } from 'react-router-dom';
+import { Table } from 'react-bootstrap';
 
 const Users = () => {
   const { id } = useParams();
@@ -29,7 +30,7 @@ const Users = () => {
   return (
     <div>
       <h2>Users</h2>
-      <table>
+      <Table striped>
         <tbody>
           <tr>
             <th>{' '}</th>
@@ -44,7 +45,7 @@ const Users = () => {
             </tr>
           )) : null}
         </tbody>
-      </table>
+      </Table>
     </div>
   );
 };

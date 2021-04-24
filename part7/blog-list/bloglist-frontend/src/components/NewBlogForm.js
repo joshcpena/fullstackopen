@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
+import { Button } from 'react-bootstrap';
 import { createBlog } from '../reducers/blogReducer';
 import { setMessage } from '../reducers/notificationReducer';
 
@@ -67,7 +68,7 @@ const NewBlogForm = ({ blogFormRef }) => {
             onChange={handleNewBlog}
           />
         </div>
-        <button type="submit">save</button>
+        <Button type="submit">save</Button>
       </form>
     </div>
   );

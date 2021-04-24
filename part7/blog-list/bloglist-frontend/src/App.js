@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   Switch, Route, useRouteMatch,
 } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
 
 import Blog from './components/Blog';
 import LoginForm from './components/LoginForm';
@@ -62,7 +63,7 @@ const App = () => {
           <div>
             <h2>blogs</h2>
             <p>{`${user.name} ${user.username} logged in`}</p>
-            <button type="button" onClick={handleLogout}>logout</button>
+            <Button type="Button" onClick={handleLogout}>logout</Button>
             <Switch>
               <Route path="/users/:id">
                 <Users />
