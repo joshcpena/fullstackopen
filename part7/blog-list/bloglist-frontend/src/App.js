@@ -3,8 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   Switch, Route, useRouteMatch,
 } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
-
+import { Button, Navbar, Nav } from 'react-bootstrap';
 import Blog from './components/Blog';
 import LoginForm from './components/LoginForm';
 import NewBlogForm from './components/NewBlogForm';
@@ -61,9 +60,14 @@ const App = () => {
         )
         : (
           <div>
-            <h2>blogs</h2>
-            <p>{`${user.name} ${user.username} logged in`}</p>
-            <Button type="Button" onClick={handleLogout}>logout</Button>
+            <Navbar bg="light">
+              <Nav.Link href="/blogs">blogs</Nav.Link>
+              <Nav.Link href="/users/">users</Nav.Link>
+              <Navbar.Text>
+                {`${user.name} ${user.username} logged in`}
+              </Navbar.Text>
+              <Button type="Button" onClick={handleLogout}>logout</Button>
+            </Navbar>
             <Switch>
               <Route path="/users/:id">
                 <Users />
@@ -72,9 +76,12 @@ const App = () => {
                 <Users />
               </Route>
               <Route path="/blogs/:id">
+                <h2>blogs</h2>
+
                 <Blog blog={blogById} username={user.username} />
               </Route>
               <Route path="/">
+                <h2>blogs</h2>
                 <Togglable buttonLabel="new blog" ref={blogFormRef}>
                   <NewBlogForm blogFormRef={blogFormRef} />
                 </Togglable>
