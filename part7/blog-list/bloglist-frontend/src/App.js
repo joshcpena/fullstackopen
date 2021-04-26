@@ -62,7 +62,6 @@ const App = () => {
           <div>
             <Navbar bg="light">
               <Nav style={{ marginRight: '20px' }}><Link to="/blogs/">blogs</Link></Nav>
-              <Nav style={{ marginRight: '20px' }}><Link to="/users/">users</Link></Nav>
               <Navbar.Text>
                 {`${user.name} ${user.username} logged in`}
               </Navbar.Text>
