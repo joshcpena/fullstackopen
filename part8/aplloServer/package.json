@@ -3,5 +3,15 @@
     "apollo-server": "^2.23.0",
     "graphql": "^15.5.0",
     "uuid": "^8.3.2"
-  }
+  },
+  "name": "aplloserver",
+  "version": "1.0.0",
+  "main": "apollo.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
